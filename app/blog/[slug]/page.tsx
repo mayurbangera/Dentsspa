@@ -1,5 +1,8 @@
 import { blogPosts } from "@/lib/data/siteData";
 import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import SmallBookingCTA from "@/components/sections/SmallBookingCTA";
 import type { Metadata } from "next";
 
 export async function generateStaticParams() {
@@ -31,101 +34,126 @@ export default async function BlogDetailPage({
 
   const otherPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 2);
 
+  // Social share icons list
+  const shareSocials = [
+    { icon: "/images/facebook.svg", label: "Facebook" },
+    { icon: "/images/linkedin.svg", label: "LinkedIn" },
+    { icon: "/images/email_icon.svg", label: "Email" },
+  ];
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Banner */}
-      <section className="bg-cream-light/30 py-16 border-b border-border-neutral">
-        <div className="max-w-4xl mx-auto px-6 text-center flex flex-col items-center space-y-4">
-          <span className="font-montserrat font-bold text-xs uppercase tracking-widest text-primary">
-            BLOG POST
+    <div className="flex flex-col min-h-screen bg-[#FFF8EE]">
+      {/* Hero Banner Section matching overall structure */}
+      <section className="relative w-full h-[35vh] md:h-[45vh] overflow-hidden">
+        <Image
+          src="/images/about_us_banner.jpg"
+          alt="DDS Blog Details"
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        <div className="absolute inset-0 bg-[#411928]/50" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          <span className="font-montserrat font-bold text-xs uppercase tracking-widest text-cream mb-2">
+            BLOG ARTICLE
           </span>
-          <h1 className="font-caudex font-bold text-3xl md:text-4xl text-primary leading-tight">
+          <h1 className="font-caudex font-bold text-3xl md:text-5xl text-white max-w-4xl leading-tight">
             {post.title}
           </h1>
-          <p className="font-instrument text-sm text-text-muted">
-            Posted on: {post.date}
-          </p>
         </div>
       </section>
 
-      {/* Featured Image */}
-      <section className="py-12 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="relative h-[350px] md:h-[500px] w-full rounded-[24px] overflow-hidden shadow-xl border border-border-neutral">
-            {/* Use next/image */}
-            <img
+      {/* Main content grid */}
+      <section className="py-20 px-6 max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        {/* Left Column: Article Body */}
+        <article className="lg:col-span-8 bg-white border border-border-neutral rounded-[24px] p-8 md:p-10 shadow-sm space-y-6">
+          <div className="flex items-center space-x-2 text-text-muted font-instrument text-xs">
+            <span>Published on:</span>
+            <span className="font-semibold text-primary">{post.date}</span>
+          </div>
+
+          <div className="relative h-[250px] sm:h-[350px] w-full rounded-2xl overflow-hidden bg-card-bg">
+            <Image
               src={post.image}
               alt={post.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
           </div>
-        </div>
-      </section>
 
-      {/* Article Content */}
-      <article className="pb-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6 flex flex-col space-y-6">
-          {post.content.map((paragraph, i) => (
-            <p
-              key={i}
-              className="font-instrument text-base md:text-lg text-text-dark leading-loose"
-            >
-              {paragraph}
-            </p>
-          ))}
+          <div className="space-y-6 pt-4 font-instrument text-base text-text-dark leading-relaxed">
+            {post.content.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
 
-          {/* Share Row */}
-          <div className="pt-8 border-t border-border-neutral flex items-center space-x-3 font-instrument font-bold text-sm text-primary uppercase tracking-widest">
-            <span>Share This Post</span>
+          {/* Social Share bar */}
+          <div className="pt-6 border-t border-border-neutral flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <span className="font-montserrat font-bold text-xs uppercase tracking-wider text-primary">
+              Share this article
+            </span>
             <div className="flex items-center space-x-2">
-              {["1", "2", "3", "4", "5"].map((n) => (
+              {shareSocials.map((social, i) => (
                 <button
-                  key={n}
-                  className="w-8 h-8 bg-cream-light rounded-full flex items-center justify-center text-xs font-bold text-primary hover:bg-primary hover:text-white transition-colors"
+                  key={i}
+                  className="bg-cream-light hover:bg-[#62826B]/10 p-2.5 rounded-full border border-border-neutral transition-colors cursor-pointer"
+                  aria-label={`Share on ${social.label}`}
                 >
-                  {n}
+                  <div className="relative w-4 h-4">
+                    <Image
+                      src={social.icon}
+                      alt={social.label}
+                      fill
+                      className="object-contain filter-accent-green"
+                      style={{
+                        filter: "invert(13%) sepia(21%) saturate(3015%) hue-rotate(317deg) brightness(85%) contrast(85%)" // #411928 brand color
+                      }}
+                    />
+                  </div>
                 </button>
               ))}
             </div>
           </div>
-        </div>
-      </article>
+        </article>
 
-      {/* Related Posts */}
-      {otherPosts.length > 0 && (
-        <section className="py-20 bg-cream-light/20 border-t border-border-neutral">
-          <div className="max-w-7xl mx-auto px-6">
-            <h2 className="font-caudex font-bold text-2xl md:text-3xl text-primary mb-10 text-center">
-              Related Articles
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {/* Right Column: Sidebar (Recent/Related Posts) */}
+        <aside className="lg:col-span-4 space-y-8">
+          <div className="bg-white border border-border-neutral rounded-[24px] p-6 shadow-sm space-y-6">
+            <h3 className="font-caudex font-bold text-lg text-primary border-b border-border-neutral pb-2">
+              Recent Articles
+            </h3>
+            <div className="space-y-6">
               {otherPosts.map((relatedPost) => (
-                <a
+                <Link
                   key={relatedPost.id}
                   href={`/blog/${relatedPost.slug}`}
-                  className="bg-white rounded-[20px] border border-border-neutral shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-primary/10 transition-all duration-300 group"
+                  className="flex gap-4 group items-start"
                 >
-                  <div className="relative h-[180px] w-full overflow-hidden">
-                    <img
+                  <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-card-bg">
+                    <Image
                       src={relatedPost.image}
                       alt={relatedPost.title}
-                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                      fill
+                      className="object-cover"
                     />
                   </div>
-                  <div className="p-5 space-y-2">
-                    <p className="font-instrument text-xs text-text-muted">
-                      Posted on: {relatedPost.date}
-                    </p>
-                    <h3 className="font-caudex font-bold text-base text-primary leading-snug">
+                  <div className="space-y-1">
+                    <h4 className="font-caudex font-bold text-sm text-primary group-hover:text-[#62826B] transition-colors leading-snug line-clamp-2">
                       {relatedPost.title}
-                    </h3>
+                    </h4>
+                    <p className="font-instrument text-[10px] text-text-muted">
+                      {relatedPost.date}
+                    </p>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
-        </section>
-      )}
+        </aside>
+      </section>
+
+      {/* Bottom CTA Banner (matches about/contact pages) */}
+      <SmallBookingCTA />
     </div>
   );
 }

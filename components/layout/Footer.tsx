@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { Phone, Mail, Clock, MapPin, Share2, Rss, AtSign, Globe } from "lucide-react";
+import Image from "next/image";
+import { Phone, Mail, Clock, MapPin } from "lucide-react";
 
 export default function Footer() {
   const quickLinks = [
@@ -23,37 +24,32 @@ export default function Footer() {
     { name: "Root Canal", href: "/services/general-dentistry" },
   ];
 
+  const socials = [
+    { icon: "/images/call_icon.svg", href: "tel:+919673004407", label: "Phone" },
+    { icon: "/images/email_icon.svg", href: "mailto:consult@dentsspa.com", label: "Email" },
+    { icon: "/images/facebook.svg", href: "#", label: "Facebook" },
+    { icon: "/images/linkedin.svg", href: "#", label: "LinkedIn" },
+  ];
+
   return (
-    <footer className="bg-dark text-white border-t border-primary/20">
+    <footer className="bg-[#380920] text-white border-t border-primary/20">
       {/* Top Footer Section */}
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
         {/* Brand & Tagline */}
         <div className="flex flex-col space-y-6">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="bg-primary text-white p-2 rounded-lg font-bold tracking-wider flex items-center justify-center">
-              <span className="font-caudex text-lg">DDS</span>
-            </div>
-            <span className="font-caudex font-bold text-xl tracking-tight text-white">
-              DENTAL CLINIC
-            </span>
+            <Image
+              src="/images/logo.png"
+              alt="DDS Dental Clinic Logo"
+              width={110}
+              height={35}
+              className="object-contain brightness-0 invert"
+              priority
+            />
           </Link>
           <p className="font-alex text-4xl text-cream-light mt-2 tracking-wide leading-none">
             Diagnose. Design. Smile
           </p>
-          <div className="flex items-center space-x-4 pt-4">
-            <a href="#" className="hover:text-cream transition-colors bg-white/5 p-2.5 rounded-full hover:bg-white/10" aria-label="Facebook">
-              <Share2 className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-cream transition-colors bg-white/5 p-2.5 rounded-full hover:bg-white/10" aria-label="Instagram">
-              <AtSign className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-cream transition-colors bg-white/5 p-2.5 rounded-full hover:bg-white/10" aria-label="Twitter/X">
-              <Globe className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-cream transition-colors bg-white/5 p-2.5 rounded-full hover:bg-white/10" aria-label="RSS Feed">
-              <Rss className="w-5 h-5" />
-            </a>
-          </div>
         </div>
 
         {/* Quick Links */}
@@ -121,16 +117,30 @@ export default function Footer() {
       <div className="border-t border-white/10"></div>
 
       {/* Bottom Footer Section */}
-      <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center">
-        <p className="font-instrument text-xs text-text-light">
+      <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <p className="font-instrument text-xs text-text-light order-2 md:order-1">
           Copyright © 2026 DDS Dental Clinic | All Rights Reserved.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-6 font-instrument text-xs text-text-light">
-          <Link href="/privacy" className="hover:text-cream transition-colors">Privacy Policy</Link>
-          <span className="text-white/20">|</span>
-          <Link href="/terms" className="hover:text-cream transition-colors">Terms & Conditions</Link>
-          <span className="text-white/20">|</span>
-          <Link href="/disclaimer" className="hover:text-cream transition-colors">Disclaimer</Link>
+
+        {/* Custom Social Media Icons (call_icon, email_icon, facebook, linkedin) */}
+        <div className="flex items-center space-x-4 order-1 md:order-2">
+          {socials.map((social, i) => (
+            <a
+              key={i}
+              href={social.href}
+              className="bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all duration-200"
+              aria-label={social.label}
+            >
+              <div className="relative w-5 h-5">
+                <Image
+                  src={social.icon}
+                  alt={social.label}
+                  fill
+                  className="object-contain brightness-0 invert"
+                />
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </footer>

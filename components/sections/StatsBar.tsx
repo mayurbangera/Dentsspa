@@ -1,7 +1,38 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
+
+interface AnimatedNumberProps {
+  value: string;
+}
+
+function AnimatedNumber({ value }: AnimatedNumberProps) {
+  const numberRef = useRef<HTMLSpanElement>(null);
+  const numericValue = parseInt(value.replace(/\D/g, ""), 10) || 0;
+  const suffix = value.replace(/\d/g, ""); // Get '+' or other non-numeric chars
+
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest));
+  const isInView = useInView(numberRef, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (isInView) {
+      const controls = animate(count, numericValue, {
+        duration: 2,
+        ease: "easeOut",
+      });
+      return () => controls.stop();
+    }
+  }, [isInView, count, numericValue]);
+
+  return (
+    <span ref={numberRef} className="font-caudex font-bold text-4xl md:text-5xl lg:text-6xl text-cream mb-2">
+      <motion.span>{rounded}</motion.span>
+      {suffix}
+    </span>
+  );
+}
 
 export default function StatsBar() {
   const ref = useRef(null);
@@ -26,10 +57,8 @@ export default function StatsBar() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className="flex flex-col items-center text-center px-4 py-4 md:py-0"
             >
-              <span className="font-caudex font-bold text-4xl md:text-5xl lg:text-6xl text-cream mb-2">
-                {stat.value}
-              </span>
-              <span className="font-instrument text-xs md:text-sm text-cream-light font-medium uppercase tracking-wider max-w-[180px]">
+              <AnimatedNumber value={stat.value} />
+              <span className="font-instrument text-xs md:text-sm text-cream-light font-medium uppercase tracking-wider max-w-[180px] mt-2">
                 {stat.label}
               </span>
             </motion.div>

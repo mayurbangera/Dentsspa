@@ -19,7 +19,7 @@ export default function StarRating({
           key={index}
           className={`w-5 h-5 ${
             index < rating
-              ? "text-primary fill-primary"
+              ? "text-[#62826B] fill-[#62826B]"
               : "text-border-neutral"
           }`}
         />

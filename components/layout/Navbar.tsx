@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Menu, X, Star } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isTechOpen, setIsTechOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
@@ -28,67 +30,90 @@ export default function Navbar() {
   useEffect(() => {
     setIsOpen(false);
     setIsServicesOpen(false);
+    setIsTechOpen(false);
   }, [pathname]);
+
+  const servicesDropdown = [
+    { name: "General Dental Services", href: "/services/general-dentistry" },
+    { name: "Restorative Dentistry", href: "#" },
+    { name: "Cosmetic Dentistry", href: "/services/cosmetic-dentistry" },
+    { name: "Orthodontic Treatments (Braces & Aligners)", href: "#" },
+    { name: "Dental Lasers Treatment", href: "#" },
+    { name: "Dental Implants Treatment", href: "#" },
+    { name: "Full Mouth Rehabilitation", href: "#" },
+    { name: "Denture Treatment", href: "#" },
+    { name: "Pediatric Dentistry", href: "#" },
+  ];
+
+  const techDropdown = [
+    { name: "CBCT 3D Imaging", href: "#" },
+    { name: "3D Intra-Oral Scanning", href: "#" },
+    { name: "CEREC Single Visit Crowns", href: "#" },
+    { name: "Dental Lasers", href: "#" },
+    { name: "Dental Microscope", href: "#" },
+    { name: "Prime Scan Intraoral Scanner", href: "#" },
+    { name: "GBT Cleaning", href: "#" },
+    { name: "GBT Machine", href: "#" },
+  ];
 
   const navLinks = [
     { name: "ABOUT", href: "/about" },
-    {
-      name: "SERVICES",
-      href: "#",
-      dropdown: [
-        { name: "General Dentistry", href: "/services/general-dentistry" },
-        { name: "Cosmetic Dentistry", href: "/services/cosmetic-dentistry" },
-      ],
-    },
-    { name: "TECHNOLOGY", href: "/#technology" },
-    { name: "OUR CLIENTS", href: "/#clients" },
+    { name: "SERVICES", href: "/services", dropdown: servicesDropdown },
+    { name: "TECHNOLOGY", href: "#", dropdown: techDropdown },
+    { name: "OUR CLIENTS", href: "/clients" },
     { name: "GALLERY", href: "/gallery" },
-    { name: "ACHIEVEMENTS", href: "/about#achievements" },
+    { name: "ACHIEVEMENTS", href: "/achievements" },
+    { name: "CONTACT", href: "/contact" },
   ];
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-md py-4 border-b border-border-neutral"
-          : "bg-white/90 py-5"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#62826B] shadow-md py-4`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* LOGO */}
         <Link href="/" className="flex items-center space-x-2">
-          <div className="bg-primary text-white p-2 rounded-lg font-bold tracking-wider flex items-center justify-center">
-            <span className="font-caudex text-lg">DDS</span>
-          </div>
-          <span className="font-caudex font-bold text-xl tracking-tight text-primary">
-            DENTAL CLINIC
-          </span>
+          <Image
+            src="/images/logo.png"
+            alt="DDS Dental Clinic Logo"
+            width={120}
+            height={40}
+            className="object-contain h-10 w-auto"
+            priority
+          />
         </Link>
 
         {/* DESKTOP NAV */}
         <nav className="hidden lg:flex items-center space-x-8">
           {navLinks.map((link) => {
             if (link.dropdown) {
+              const isService = link.name === "SERVICES";
+              const isOpenDropdown = isService ? isServicesOpen : isTechOpen;
+              const setOpenDropdown = isService ? setIsServicesOpen : setIsTechOpen;
+
               return (
                 <div
                   key={link.name}
                   className="relative"
-                  onMouseEnter={() => setIsServicesOpen(true)}
-                  onMouseLeave={() => setIsServicesOpen(false)}
+                  onMouseEnter={() => setOpenDropdown(true)}
+                  onMouseLeave={() => setOpenDropdown(false)}
                 >
-                  <button className="flex items-center space-x-1 font-montserrat font-semibold text-sm text-text-dark hover:text-primary transition-colors py-2">
+                  <Link 
+                    href={link.href}
+                    className="flex items-center space-x-1 font-montserrat font-semibold text-sm text-white hover:text-cream transition-colors py-2"
+                  >
                     <span>{link.name}</span>
                     <ChevronDown className="w-4 h-4 transition-transform duration-200" />
-                  </button>
+                  </Link>
 
                   <AnimatePresence>
-                    {isServicesOpen && (
+                    {isOpenDropdown && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute left-0 mt-1 w-56 bg-white rounded-xl shadow-xl py-2 border border-border-neutral"
+                        className="absolute left-0 mt-1 w-64 bg-white rounded-xl shadow-xl py-2 border border-border-neutral"
                       >
                         {link.dropdown.map((subItem) => (
                           <Link
@@ -111,8 +136,8 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`font-montserrat font-semibold text-sm hover:text-primary transition-colors py-2 ${
-                  isActive ? "text-primary border-b-2 border-primary" : "text-text-dark"
+                className={`font-montserrat font-semibold text-sm hover:text-cream transition-colors py-2 ${
+                  isActive ? "text-cream border-b-2 border-cream" : "text-white"
                 }`}
               >
                 {link.name}
@@ -121,11 +146,11 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* CTA BUTTON */}
+        {/* CTA BUTTON - OUTLINED IN WHITE */}
         <div className="hidden lg:flex items-center">
           <Link
             href="/book"
-            className="bg-primary hover:bg-primary-deep text-white font-instrument text-sm font-semibold px-6 py-2.5 rounded-[11px] shadow-sm transition-all duration-200 hover:scale-[1.02]"
+            className="border-2 border-white text-white hover:bg-white hover:text-[#62826B] font-instrument text-sm font-semibold px-6 py-2.5 rounded-[11px] transition-all duration-200 hover:scale-[1.02]"
           >
             Book an Appointment
           </Link>
@@ -134,7 +159,7 @@ export default function Navbar() {
         {/* MOBILE MENU TRIGGER */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="lg:hidden text-text-dark p-2 hover:text-primary transition-colors"
+          className="lg:hidden text-white p-2 hover:text-cream transition-colors"
           aria-label="Toggle Menu"
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -148,35 +173,41 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-t border-border-neutral"
+            className="lg:hidden bg-[#62826B] border-t border-white/10"
           >
             <div className="px-6 py-4 flex flex-col space-y-4">
               {navLinks.map((link) => {
                 if (link.dropdown) {
+                  const isService = link.name === "SERVICES";
+                  const isDropOpen = isService ? isServicesOpen : isTechOpen;
+                  const setDropOpen = isService ? setIsServicesOpen : setIsTechOpen;
+
                   return (
                     <div key={link.name} className="flex flex-col space-y-2">
                       <button
-                        onClick={() => setIsServicesOpen(!isServicesOpen)}
-                        className="flex items-center justify-between font-montserrat font-semibold text-sm text-text-dark py-2"
+                        onClick={() => setDropOpen(!isDropOpen)}
+                        className="flex items-center justify-between font-montserrat font-semibold text-sm text-white py-2"
                       >
                         <span>{link.name}</span>
                         <ChevronDown
                           className={`w-4 h-4 transition-transform ${
-                            isServicesOpen ? "rotate-180" : ""
+                            isDropOpen ? "rotate-180" : ""
                           }`}
                         />
                       </button>
-                      <div className="pl-4 flex flex-col space-y-2 border-l border-border-neutral">
-                        {link.dropdown.map((subItem) => (
-                          <Link
-                            key={subItem.name}
-                            href={subItem.href}
-                            className="text-sm font-instrument text-text-muted hover:text-primary py-1"
-                          >
-                            {subItem.name}
-                          </Link>
-                        ))}
-                      </div>
+                      {isDropOpen && (
+                        <div className="pl-4 flex flex-col space-y-2 border-l border-white/20">
+                          {link.dropdown.map((subItem) => (
+                            <Link
+                              key={subItem.name}
+                              href={subItem.href}
+                              className="text-sm font-instrument text-cream/80 hover:text-white py-1"
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   );
                 }
@@ -185,7 +216,7 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className="font-montserrat font-semibold text-sm text-text-dark hover:text-primary py-2"
+                    className="font-montserrat font-semibold text-sm text-white hover:text-cream py-2"
                   >
                     {link.name}
                   </Link>
@@ -193,7 +224,7 @@ export default function Navbar() {
               })}
               <Link
                 href="/book"
-                className="bg-primary hover:bg-primary-deep text-white font-instrument text-sm font-semibold px-6 py-3 rounded-[11px] text-center shadow-sm transition-all duration-200"
+                className="border-2 border-white text-white hover:bg-white hover:text-[#62826B] font-instrument text-sm font-semibold px-6 py-3 rounded-[11px] text-center transition-all duration-200"
               >
                 Book an Appointment
               </Link>

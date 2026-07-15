@@ -18,7 +18,7 @@ export default function Hero() {
       {/* ── PART 1: Full-width dark hero image with script overlay ── */}
       <section className="relative w-full h-[55vh] md:h-[65vh] overflow-hidden">
         <Image
-          src="/images/hero_bg_1.png"
+          src="/images/hero_banner.jpeg"
           alt="DDS Dental Clinic Interior"
           fill
           className="object-cover object-center"
@@ -52,7 +52,7 @@ export default function Hero() {
             className="relative h-[360px] md:h-[460px] w-full rounded-2xl overflow-hidden shadow-xl border-4 border-white"
           >
             <Image
-              src="/images/hero_bg_2.png"
+              src="/images/professionals_excellence.png"
               alt="DDS Clinic Reception"
               fill
               className="object-cover"
