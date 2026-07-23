@@ -39,11 +39,11 @@ export default function Footer() {
         <div className="flex flex-col space-y-6">
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/images/logo.png"
+              src="/images/dds_final_logo_white.png"
               alt="DDS Dental Clinic Logo"
-              width={110}
-              height={35}
-              className="object-contain brightness-0 invert"
+              width={140}
+              height={45}
+              className="object-contain"
               priority
             />
           </Link>
